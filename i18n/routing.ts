@@ -1,4 +1,5 @@
 import { defineRouting } from "next-intl/routing";
+import { createNavigation } from "next-intl/navigation";
 
 /**
  * next-intl routing config.
@@ -11,3 +12,7 @@ export const routing = defineRouting({
   // Don't prefix the default locale in URLs (e.g. /branch vs /en/branch)
   localePrefix: "as-needed",
 });
+
+// Export localized navigation APIs
+export const { Link, redirect, usePathname, useRouter } = createNavigation(routing);
+

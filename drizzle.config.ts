@@ -1,7 +1,8 @@
 import { defineConfig } from "drizzle-kit";
+import * as dotenv from "dotenv";
 
-// Note: drizzle-kit uses a direct (non-pooled) connection for migrations.
-// Use the Session mode Supabase URL (port 5432), not the Transaction mode pooled URL.
+dotenv.config({ path: ".env.local" });
+
 const connectionString =
   process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL ?? "";
 
