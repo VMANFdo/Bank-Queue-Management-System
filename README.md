@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bank Queue Management System (BQMS)
 
-## Getting Started
+A modern, trilingual digital queue management platform tailored for Sri Lankan bank branches. BQMS replaces paper-based queuing with a single, highly concurrent transactional Queue Engine powering five dedicated UI surfaces in real time.
 
-First, run the development server:
+---
 
+## 🚀 Key Features & UI Surfaces
+
+1. **Customer Web App (Public)**
+   - Service selection and appointment booking (15-minute intervals).
+   - Live ticket tracking and dynamic wait time estimation.
+   - Trilingual support (English, Sinhala, Tamil) with session persistence.
+   - Feedback submission upon service completion.
+
+2. **Teller Console (Staff-facing)**
+   - Unified ticket calling panel (Next, Call, Recall, Done, Transfer, No-show).
+   - Real-time waiting list counters (Appointments, Priority, Standard).
+   - Break management with SLA timers.
+
+3. **Branch Manager Dashboard (Staff-facing)**
+   - Live overview of all active counters and queue depths.
+   - SLA threshold alerts (visual breach cues).
+   - Teller reallocation and queue rebalancing tools.
+
+4. **Hall Display Board (Public, In-Branch)**
+   - High-contrast, accessibility-first split screen ("Now Serving" & "Next Up").
+   - Voice announcements cycling sequentially through Sinhala, Tamil, and English.
+
+5. **Head Office Admin Portal (Staff-facing)**
+   - Multi-branch administration and tenant provisioning.
+   - Staff invite flow (HO Admin triggers Supabase invites for branch managers/tellers).
+   - Historical analytics, no-show locks, and SLA thresholds.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Core Framework**: Next.js 16.2 (App Router & TypeScript) & React 19
+- **Database**: Supabase (Postgres with transactional row locking)
+- **ORM**: Drizzle ORM (for serverless-friendly schema management)
+- **Realtime Sync**: Supabase Realtime (Logical replication/WebSockets)
+- **Internationalization**: next-intl (English `en`, Sinhala `si`, Tamil `ta`)
+- **Styling**: Tailwind CSS & shadcn/ui (Radix primitives)
+- **Scheduled Jobs**: Vercel Cron (triggering automated sweeps every 1 minute)
+- **Validation**: Zod (type-safe environment variables and API contracts)
+
+---
+
+## 📦 Local Installation & Setup
+
+Follow these steps to clone and spin up the project locally:
+
+### 1. Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/Bank-Queue-Management-System.git
+cd "Bank Queue Management System"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+Run npm install in the root folder of the project to download all necessary dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Configure Environment Variables
+Copy the template `.env.example` into a local environment file:
+```bash
+cp .env.example .env.local
+```
+Then, edit `.env.local` to fill in your real Supabase credentials and database strings:
+- `DATABASE_URL`: Connection string to your Supabase Postgres database.
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Found in your Supabase dashboard (Project Settings → API).
+- `SUPABASE_SERVICE_ROLE_KEY`: Service role key (used for server-only actions like auth invites).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Migrations & Seeding (Database Setup)
+Once your database environment variables are configured in `.env.local`, set up the schema using Drizzle ORM:
+```bash
+# Generate SQL migrations from schema
+npx drizzle-kit generate
 
-## Learn More
+# Push schemas directly to Supabase Postgres
+npx drizzle-kit push
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Run the Development Server
+Start the Next.js dev server:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🖥️ Viewing the System
 
-## Deploy on Vercel
+Once the dev server starts successfully:
+1. Open your browser and navigate to: **[http://localhost:3000](http://localhost:3000)**.
+2. The initial codebase serves the default landing page. As the project development progresses through its roadmap, the public and protected UI routes will become active:
+   - **Customer Web App**: `/branch/[branchId]`
+   - **Teller Console**: `/teller/console`
+   - **Manager Dashboard**: `/manager/dashboard`
+   - **Hall Display Board**: `/display/[branchId]`
+   - **HO Admin Portal**: `/admin`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
