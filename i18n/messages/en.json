@@ -1,0 +1,101 @@
+{
+  "common": {
+    "appName": "BQMS",
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "back": "Back",
+    "next": "Next",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "close": "Close",
+    "search": "Search"
+  },
+  "nav": {
+    "home": "Home",
+    "myTicket": "My Ticket",
+    "bookAppointment": "Book Appointment"
+  },
+  "branch": {
+    "findBranch": "Find a Branch",
+    "searchByCity": "Search by city…",
+    "allBranches": "All Branches",
+    "nearbyBranches": "Nearby Branches",
+    "waitTime": "Wait time",
+    "crowdLevel": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "busy": "Busy"
+    },
+    "selectService": "Select a Service",
+    "notSure": "Not sure? Let us help",
+    "minutes": "{count, plural, one {# min} other {# mins}}"
+  },
+  "ticket": {
+    "joinQueue": "Join Queue",
+    "bookLater": "Book for Later",
+    "standard": "Standard",
+    "priority": "Priority",
+    "appointment": "Appointment",
+    "priorityDeclaration": "I confirm I qualify for priority service as a senior citizen, person with disability, or pregnant individual.",
+    "priorityDeclarationRequired": "Please confirm your eligibility for priority service.",
+    "yourPosition": "Your Position",
+    "estimatedWait": "Estimated Wait",
+    "tokenNumber": "Token Number",
+    "nowServing": "Now Serving",
+    "status": {
+      "waiting": "Waiting",
+      "called": "Called",
+      "inService": "In Service",
+      "done": "Done",
+      "noShow": "No Show",
+      "onHold": "On Hold",
+      "cancelled": "Cancelled",
+      "transferred": "Transferred"
+    }
+  },
+  "appointment": {
+    "selectTime": "Select a Time Slot",
+    "bookingCode": "Booking Code",
+    "window": "Arrival Window",
+    "iHaveArrived": "I Have Arrived",
+    "arrivalCountdown": "Available in {minutes} min",
+    "checkIn": "Check In",
+    "enterBookingCode": "Enter your booking code",
+    "enterNic": "Enter your NIC number",
+    "status": {
+      "pending": "Pending",
+      "checkedIn": "Checked In",
+      "expired": "Expired",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    }
+  },
+  "customer": {
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "nic": "NIC Number",
+    "nicHint": "Enter your 9-digit or 12-digit NIC number",
+    "nicInvalid": "Please enter a valid NIC number (9 digits ending in V/X, or 12 digits)"
+  },
+  "feedback": {
+    "title": "How was your experience?",
+    "rating": "Rating",
+    "tags": "What went well?",
+    "comment": "Additional comments (optional)",
+    "submit": "Submit Feedback",
+    "thankYou": "Thank you for your feedback!"
+  },
+  "display": {
+    "nowServing": "Now Serving",
+    "comingNext": "Coming Next",
+    "counter": "Counter",
+    "priorityNotice": "Priority customers (senior citizens, persons with disabilities, and pregnant individuals) are served after every 3 standard customers."
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unauthorized": "You are not authorized to view this page",
+    "ticketNotFound": "Ticket not found",
+    "appointmentExpired": "This appointment has expired"
+  }
+}
