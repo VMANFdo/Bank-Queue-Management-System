@@ -79,11 +79,14 @@
 
 ## Phase 4 — Auth & Middleware
 - [x] `middleware.ts` (root) — Supabase SSR session validation + role-based route protection
-- [ ] `lib/auth/roles.ts` — `Role` enum + `requireRole(session, role)` helper
-- [ ] `lib/auth/middleware.ts` — reusable guard for Server Actions and API routes
-- [ ] `lib/auth/session.ts` — Supabase SSR session update helper (imported by middleware)
-- [ ] `/auth/accept-invite` route — handles Supabase invite link; lets invited staff set their password on first login
-- [ ] Rate limiting on public ticket creation (`/api/queue/issue-ticket`) — IP-based counter
+- [x] `lib/auth/roles.ts` — `Role` enum + `requireRole(session, role)` helper
+- [x] `lib/auth/guard.ts` — reusable guard for Server Actions and API routes (renamed from `middleware.ts` to avoid Next.js convention conflict)
+- [x] `lib/auth/session.ts` — Supabase SSR session update helper (imported by middleware)
+- [x] `/auth/accept-invite` route — handles Supabase invite link; lets invited staff set their password on first login
+- [x] `/auth/login` route — minimal email/password sign-in with role-based redirect
+- [x] Rate limiting (`lib/rate-limit.ts`) — in-memory IP-based counter for API routes
+- [x] Route group structure — `(staff)/teller`, `(staff)/manager`, `(admin)/admin`
+- [x] Role-based route paths: `/teller` → teller, `/manager` → branch_manager, `/admin` → head_office_admin
 
 ---
 
