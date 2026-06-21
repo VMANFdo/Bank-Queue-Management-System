@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+// Note: .env.local is loaded by Next.js automatically.
+// For standalone scripts (tsx/vitest), a setup file handles dotenv loading.
+
 /**
- * Environment variable schema.
  * Validates all required env vars at startup — fails fast with a clear error
  * if anything is missing, preventing mysterious runtime failures.
  */
