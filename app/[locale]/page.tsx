@@ -52,6 +52,14 @@ export default function Home() {
             தமிழ்
           </Link>
         </div>
+
+        {/* Sign In */}
+        <Link
+          href="/auth/login"
+          className="px-4 py-2 rounded-full text-xs font-semibold tracking-wide border border-zinc-700 text-zinc-300 hover:text-white hover:border-emerald-500 hover:bg-emerald-500/10 transition-all duration-300"
+        >
+          Sign in
+        </Link>
       </header>
 
       {/* Hero Content */}
