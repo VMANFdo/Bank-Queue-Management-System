@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:seed": "npx tsx db/seed.ts",
+    "db:seed-auth": "npx tsx db/seed-auth.ts",
     "db:test-engine": "npx tsx db/test-engine.ts",
     "test": "vitest run",
     "test:watch": "vitest"

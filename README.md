@@ -88,16 +88,33 @@ Start the Next.js dev server:
 npm run dev
 ```
 
+### 6. Seed Auth Users (Test Accounts)
+
+Create test users for all three staff roles:
+
+```bash
+npm run db:seed-auth
+```
+
+This creates the following accounts in Supabase Auth:
+
+| Role               | Email              | Password      |
+|--------------------|--------------------|---------------|
+| Head Office Admin  | admin@bqms.lk      | Admin@123     |
+| Branch Manager     | manager@bqms.lk    | Manager@123   |
+| Teller             | teller@bqms.lk     | Teller@123    |
+
 ---
 
 ## 🖥️ Viewing the System
 
 Once the dev server starts successfully:
 1. Open your browser and navigate to: **[http://localhost:3000](http://localhost:3000)**.
-2. The initial codebase serves the default landing page. As the project development progresses through its roadmap, the public and protected UI routes will become active:
+2. Click **Sign in** (top-right) and use one of the test credentials above.
+3. The initial codebase serves the default landing page. As the project development progresses through its roadmap, the public and protected UI routes will become active:
    - **Customer Web App**: `/branch/[branchId]`
-   - **Teller Console**: `/teller/console`
-   - **Manager Dashboard**: `/manager/dashboard`
+   - **Teller Console**: `/teller`
+   - **Manager Dashboard**: `/manager`
    - **Hall Display Board**: `/display/[branchId]`
    - **HO Admin Portal**: `/admin`
 
