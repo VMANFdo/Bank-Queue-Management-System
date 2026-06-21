@@ -22,7 +22,7 @@
 
 ---
 
-## Phase 2 — Database Schema & Migrations [ ]
+## Phase 2 — Database Schema & Migrations ✅
 - [x] Create `db/index.ts` — Drizzle client with pooled `postgres.js` connection
 - [x] Create `db/schema.ts` — all 13 tables in dependency order:
   - [x] `branches`
@@ -40,35 +40,40 @@
   - [x] `audit_log`
 - [x] Add all required indexes (`tickets`, `appointments`, `audit_log`, `nic_records`)
 - [x] Run `drizzle-kit generate` to produce migration files
-- [ ] Run `drizzle-kit push` / apply migration to Supabase Postgres (Pending: Supabase project credentials in `.env.local`)
+- [x] Run `drizzle-kit push` / apply migration to Supabase Postgres (Completed: Seeded and verified tables)
 - [x] Seed script — `db/seed.ts` with sample branch, services, and counters for development
 
 
 
 ---
 
-## Phase 3 — Queue Engine Core (`lib/queue/`)
-- [ ] `lib/queue/token.ts` — atomic token number generation per branch/pool/day (`A-NNN`, `P-NNN`, `S-NNN`)
-- [ ] `lib/queue/estimation.ts`
-  - [ ] `computeWaitEstimate(branchId, serviceId, pool)` — queue depth × avg service time
-  - [ ] `computeEarliestAppointmentSlot(branchId, serviceId, requestedTime)` — with buffer check
-- [ ] `lib/queue/engine.ts` — all transactional functions (each wrapped in `SELECT ... FOR UPDATE`):
-  - [ ] `getNextTicketForCounter(counterId)` — 3-pool priority logic (appointments → priority interleave → standard FIFO)
-  - [ ] `issueTicket(branchId, serviceId, pool, customerDetails, linkedServiceId?)` — creates ticket(s), computes estimate, fires SMS
-  - [ ] `callNext(counterId, actorId)` — calls `getNextTicketForCounter`, updates ticket to `called`, writes `audit_log`
-  - [ ] `markDone(ticketId, actorId)` — sets `done_at`, checks linked-pair for held partner, 60s undo guard
-  - [ ] `transfer(ticketId, destinationServiceId, actorId, reason)` — preserves `created_at`; wrong-counter correction goes to front of standard pool
-  - [ ] `noShow(ticketId, actorId)` — first no-show re-queues; second is final, increments `nic_records`
-  - [ ] `recall(ticketId, actorId)` — re-fires display + audio without state change
-  - [ ] `startBreak(counterId, expectedMinutes, actorId)` — `tickets_serviceable` calc, redistribution, manager alert if no alt counter
-  - [ ] `endBreak(counterId, actorId)` — sets counter `available`
-  - [ ] `checkInAppointment(appointmentId, method)` — activates appointment ticket into appointment pool
-- [ ] Write unit tests for all engine functions (Jest/Vitest against test DB or mocked Drizzle)
-  - [ ] 3-pool `callNext` ordering (ratio enforcement)
-  - [ ] Linked-pair hold/resume
-  - [ ] No-show re-queue → final no-show flow
-  - [ ] Break redistribution + manager alert path
-  - [ ] 60-second undo guard on `markDone`
+## Phase 3 — Queue Engine Core (`lib/queue/`) ✅
+- [x] `lib/queue/token.ts` — atomic token number generation per branch/pool/day (`A-NNN`, `P-NNN`, `S-NNN`)
+- [x] `lib/queue/estimation.ts`
+  - [x] `computeWaitEstimate(branchId, serviceId, pool)` — queue depth × avg service time
+  - [x] `computeEarliestAppointmentSlot(branchId, serviceId, requestedTime)` — with buffer check
+- [x] `lib/queue/engine.ts` — all transactional functions (each wrapped in `SELECT ... FOR UPDATE`):
+  - [x] `getNextTicketForCounter(counterId)` — 3-pool priority logic (appointments → priority interleave → standard FIFO)
+  - [x] `issueTicket(branchId, serviceId, pool, customerDetails, linkedServiceId?)` — creates ticket(s), computes estimate, fires SMS
+  - [x] `callNext(counterId, actorId)` — calls `getNextTicketForCounter`, updates ticket to `called`, writes `audit_log`
+  - [x] `markDone(ticketId, actorId)` — sets `done_at`, checks linked-pair for held partner, 60s undo guard
+  - [x] `transfer(ticketId, destinationServiceId, actorId, reason)` — preserves `created_at`; wrong-counter correction goes to front of standard pool
+  - [x] `noShow(ticketId, actorId)` — first no-show re-queues; second is final, increments `nic_records`
+  - [x] `recall(ticketId, actorId)` — re-fires display + audio without state change
+  - [x] `startBreak(counterId, expectedMinutes, actorId)` — `tickets_serviceable` calc, redistribution, manager alert if no alt counter
+  - [x] `endBreak(counterId, actorId)` — sets counter `available`
+  - [x] `checkInAppointment(appointmentId, method)` — activates appointment ticket into appointment pool
+  - [x] `undoMarkDone(ticketId, actorId)` — 60-second undo window guard (bonus function)
+- [x] Write unit tests for all engine functions (Vitest against test DB — `lib/queue/__tests__/engine.integration.test.ts`)
+  - [x] 3-pool `callNext` ordering (ratio enforcement)
+  - [x] Linked-pair hold/resume
+  - [x] No-show re-queue → final no-show flow
+  - [x] Break redistribution + manager alert path
+  - [x] 60-second undo guard on `markDone`
+  - [x] Transfer (normal + wrong_counter)
+  - [x] Recall (state unchanged)
+  - [x] Appointment check-in
+  - [x] Token generation and wait estimation
 
 ---
 

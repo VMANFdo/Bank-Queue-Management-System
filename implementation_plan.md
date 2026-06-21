@@ -1,18 +1,19 @@
 # Bank Queue Management System (BQMS) — Implementation Plan
 
-## Overview
+## Current Status: Phase 1 & Phase 2 COMPLETED ✅
 
-BQMS is a digital queue management platform for Sri Lankan bank branches, replacing paper-slip queuing with a structured, real-time system. It consists of **5 surfaces** (Customer Web App, Teller Console, Branch Manager Dashboard, Hall Display Board, Head Office Admin Portal) all powered by a single transactional Queue Engine. The system must handle three concurrent ticket pools (Appointments, Priority Walk-ins, Standard Walk-ins) per service counter with full concurrency safety.
+We have fully analyzed and verified the codebase for Phase 1 & 2:
+1. **Phase 1 (Scaffolding & Infrastructure)**: Next.js app configuration, packages, environment validations, helper utilities, routing, and middleware are successfully set up.
+2. **Phase 2 (Database Schema & Migrations)**: All 13 tables, dependencies, indexes, and primary/foreign keys are defined in [db/schema.ts](file:///c:/Users/VmanFdo/Desktop/Viman/Project/Bank%20Queue%20Management%20System/db/schema.ts). The migrations have been verified and applied to the database, and the development dataset has been successfully seeded via [db/seed.ts](file:///c:/Users/VmanFdo/Desktop/Viman/Project/Bank%20Queue%20Management%20System/db/seed.ts).
+
+We are now ready to implement **Phase 3 — Queue Engine Core**.
 
 ---
 
 ## User Review Required
 
-> [!IMPORTANT]
-> **Supabase Project Required**: You will need a Supabase project set up with the URL, anon key, and service role key before Phase 1 can be completed. Confirm if you already have one or need guidance.
-
-> [!IMPORTANT]
-> **Vercel Account Required**: Deployment in Phase 8 requires a Vercel account with the repository connected. Confirm if this is already configured.
+> [!NOTE]
+> **Queue Engine Concurrency**: The Queue Engine functions will use Postgres transactions with `FOR UPDATE` locks on selected rows to prevent race conditions (such as double-calling a ticket or duplicate token sequences).
 
 > [!WARNING]
 > **NIC Data as PII**: The spec treats NIC numbers as PII — they are masked in UI surfaces where full values aren't operationally needed. The implementation will follow this as a baseline, but you may want to confirm your specific data-handling obligations under Sri Lankan law (PDPA).
@@ -87,25 +88,30 @@ This is the most critical module. All writes go through this single engine with 
 
 #### [NEW] `lib/queue/engine.ts` — Core transactional functions
 
-| Function | Description |
-|---|---|
-| `getNextTicketForCounter(counterId)` | Implements the 3-pool priority logic (spec 5.1): appointments first → priority interleave check → standard FIFO |
-| `callNext(counterId, actorId)` | Calls `getNextTicketForCounter`, updates ticket to `called`, sets `called_at`, triggers display board update, fires SMS |
-| `markDone(ticketId, actorId)` | Sets `done_at`, checks `linked_ticket_id` for held partner, triggers post-service feedback prompt |
-| `transfer(ticketId, destinationServiceId, actorId, reason)` | Creates new ticket at destination preserving `created_at`; if wrong-counter correction, places at front of standard pool |
-| `noShow(ticketId, actorId)` | First no-show → re-queue to back; second → final `no_show` status, increments `nic_records` |
-| `recall(ticketId, actorId)` | Re-fires display board + audio notification without state change |
-| `startBreak(counterId, expectedMinutes, actorId)` | Computes `tickets_serviceable`, schedules auto-lock after Nth `markDone`, validates alternative counters exist (else manager alert) |
-| `endBreak(counterId, actorId)` | Sets counter `available`, no ticket pull-back |
-| `checkInAppointment(appointmentId, method)` | Activates appointment ticket into appointment pool |
-| `issueTicket(branchId, serviceId, pool, customerDetails, linkedServiceId?)` | Creates ticket(s), computes wait estimate, sends SMS |
+- **Database Locking Strategy**: All state modifications of `tickets` and `counters` inside engine methods are wrapped in `db.transaction` with high isolation level, or explicitly select rows `FOR UPDATE` to prevent concurrent modification by multiple tellers or customer check-ins.
+- **Interleaving Priority Queue Logic**: 
+  - When `getNextTicketForCounter` is called:
+    1. First check if there is an active `appointment` ticket with `window_start <= NOW()` in the `waiting` status. If yes, return it first.
+    2. Otherwise, check standard vs priority interleaving ratio. We query the last called ticket at this counter with `pool = 'priority'`. We then count standard tickets called at this counter since that ticket's `called_at`. If that count >= `priority_ratio_standard` (default 3), we attempt to fetch the oldest `priority` ticket. If no priority tickets are waiting, fallback to standard.
+    3. Otherwise, fetch the oldest `standard` ticket. If standard is empty, try priority.
+- **Linked-Pair (Multi-Service) Hold/Resume**:
+  - A customer can issue two tickets linked via `linked_ticket_id`.
+  - When a teller calls ticket A, the engine checks if ticket B is already in service or called at another counter. If B is already in service, ticket A is placed `on_hold` at this counter.
+  - When ticket A is marked `done`, the engine checks if ticket B was `on_hold`. If B was held, the engine automatically moves B back to `waiting` (or triggers a resume) so it can be called next.
+- **Undo Guard (60 Seconds)**:
+  - When a ticket is marked `done`, we record `done_at`. The teller can undo this within 60 seconds. The undo operation restores the ticket to `in_service` and clears `done_at`.
 
 #### [NEW] `lib/queue/estimation.ts`
-- `computeWaitEstimate(branchId, serviceId, pool)` — queue depth × avg_service_time, accounting for open counters and their current workload
-- `computeEarliestAppointmentSlot(branchId, serviceId, requestedTime)` — checks `estimated_clear_time + buffer <= requested_time`
+- `computeWaitEstimate(branchId, serviceId, pool)`:
+  - Calculates wait time: `(queueDepth * avgServiceTime) / max(1, openCountersCount)`.
+  - Queue depth includes tickets in `waiting` or `called` state.
+- `computeEarliestAppointmentSlot(branchId, serviceId, requestedTime)`:
+  - Suggests the next available 15-minute slot that doesn't violate branch config caps or estimated queue clear times.
 
 #### [NEW] `lib/queue/token.ts`
-- Token number generation: `A-NNN` (appointment), `P-NNN` (priority), `S-NNN` (standard) — atomic sequence per branch per pool per day
+- Token number generation:
+  - Generates token sequences such as `A-001`, `P-001`, `S-001` per branch per day.
+  - Generates atomically by counting existing tickets for the branch and pool created today and incrementing by 1.
 
 ---
 
