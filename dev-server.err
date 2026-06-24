@@ -1,0 +1,9 @@
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          27568
+- Dir:          C:\Users\micha\OneDrive\Desktop\Projects\Bank Queue Mgt\Bank-Queue-Management-System
+- Log:          .next\dev\logs\next-development.log
+
+Run taskkill /PID 27568 /F to stop it.
