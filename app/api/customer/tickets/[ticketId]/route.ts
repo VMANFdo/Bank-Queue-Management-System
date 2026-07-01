@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { tickets, counters, services } from "@/db/schema";
-import { eq, and, inArray, asc, sql } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
@@ -98,7 +98,7 @@ export async function GET(
       createdAt: ticket.createdAt,
       branchId: ticket.branchId,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Ticket fetch error:", error);
     return NextResponse.json({ error: "Failed to fetch ticket" }, { status: 500 });
   }

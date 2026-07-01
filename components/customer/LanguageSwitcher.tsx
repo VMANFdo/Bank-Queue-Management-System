@@ -3,7 +3,7 @@
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 const LOCALES = [
   { code: "en", label: "English" },
@@ -17,7 +17,7 @@ export function LanguageSwitcher() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMounted(true);
   }, []);
 
@@ -34,7 +34,7 @@ export function LanguageSwitcher() {
       {LOCALES.map(({ code, label }) => (
         <button
           key={code}
-          onClick={() => switchLanguage(code as any)}
+          onClick={() => switchLanguage(code)}
           className={cn(
             "px-3 py-1.5 text-sm font-medium rounded-full transition-colors",
             locale === code

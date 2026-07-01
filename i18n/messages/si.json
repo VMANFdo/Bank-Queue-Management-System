@@ -9,7 +9,9 @@
     "cancel": "අවලංගු කරන්න",
     "submit": "ඉදිරිපත් කරන්න",
     "close": "වසන්න",
-    "search": "සොයන්න"
+    "search": "සොයන්න",
+    "findBank": "බැංකුව සොයන්න",
+    "offline": "නොබැඳි"
   },
   "nav": {
     "home": "මුල් පිටුව",
@@ -29,7 +31,31 @@
     },
     "selectService": "සේවාවක් තෝරන්න",
     "notSure": "සහාය අවශ්‍යද?",
-    "minutes": "{count} මිනිත්තු"
+    "minutes": "{count} මිනිත්තු",
+    "selectBank": "බැංකුවක් තෝරන්න",
+    "activeBranches": "{count, plural, one {# සක්‍රීය ශාඛාවක්} other {# සක්‍රීය ශාඛා}}",
+    "bankNames": {
+      "BOC": "ලංකා බැංකුව",
+      "PEOPLES": "මහජන බැංකුව",
+      "COMMERCIAL": "කොමර්ෂල් බැංකුව",
+      "HNB": "හැටන් නැෂනල් බැංකුව",
+      "SAMPATH": "සම්පත් බැංකුව",
+      "SEYLAN": "සෙලාන් බැංකුව"
+    },
+    "bankTypes": {
+      "state": "රාජ්‍ය බැංකුව",
+      "private": "වාණිජ බැංකුව"
+    },
+    "bankNotSelected": "බැංකුවක් තෝරා නැත",
+    "bankNotSelectedDesc": "කරුණාකර පළමුව බැංකුවක් තෝරා එහි ක්‍රියාකාරී ශාඛා සහ සේවා කාල බලන්න.",
+    "selectBankRedirect": "බැංකුවක් තෝරන්න",
+    "noBranchesForBank": "{bankName} සඳහා \"{query}\" ට ගැලපෙන මාර්ගගත ශාඛා නොමැත",
+    "nearMe": "අසල",
+    "inLine": "පෝලිමේ",
+    "bookLater": "පසුව වෙන් කරන්න",
+    "selectServices": "සේවා තෝරන්න",
+    "searchBank": "බැංකුව සොයන්න...",
+    "bankPageSubtitle": "ශාඛා සොයා ගැනීමට බැංකුවක් තෝරන්න"
   },
   "ticket": {
     "joinQueue": "පෝළිමට එකතු වන්න",

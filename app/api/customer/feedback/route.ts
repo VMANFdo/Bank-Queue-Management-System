@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       success: true,
       feedback: newFeedback,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Feedback submission error:", error);
     return NextResponse.json({ error: "Failed to submit feedback" }, { status: 500 });
   }

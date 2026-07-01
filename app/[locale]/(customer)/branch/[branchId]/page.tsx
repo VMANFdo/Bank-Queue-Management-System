@@ -17,6 +17,16 @@ type ServiceMetric = {
   waitTimeMinutes: number;
 };
 
+type BranchDetails = {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  bankCode: string;
+  waitingCount: number;
+  crowdLevel: string;
+};
+
 export default function BranchServicesPage({
   params,
 }: {
@@ -32,8 +42,8 @@ export default function BranchServicesPage({
   const [loading, setLoading] = useState(true);
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
 
-  // Mock branch details for now, ideally fetch from API or passed state
-  const [branchDetails, setBranchDetails] = useState<any>(null);
+  // Branch details fetched from the branches list API
+  const [branchDetails, setBranchDetails] = useState<BranchDetails | null>(null);
 
   useEffect(() => {
     // Fetch branch info & services
@@ -45,7 +55,7 @@ export default function BranchServicesPage({
       const branches = await branchesRes.json();
       const svcs = await servicesRes.json();
       
-      const currentBranch = branches.find((b: any) => b.id === branchId);
+      const currentBranch = branches.find((b: BranchDetails) => b.id === branchId);
       if (currentBranch) setBranchDetails(currentBranch);
       
       setServices(svcs);

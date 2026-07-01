@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { branches, tickets, counters } from "@/db/schema";
 import { eq, and, inArray, sql } from "drizzle-orm";
@@ -11,12 +11,20 @@ function getCrowdLevel(waitingCount: number): "low" | "moderate" | "busy" {
   return "busy";
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const bankCode = searchParams.get("bank");
+
+    const conditions = [eq(branches.isActive, true)];
+    if (bankCode) {
+      conditions.push(eq(branches.bankCode, bankCode.toUpperCase()));
+    }
+
     const activeBranches = await db
       .select()
       .from(branches)
-      .where(eq(branches.isActive, true));
+      .where(and(...conditions));
 
     const branchesWithMetrics = await Promise.all(
       activeBranches.map(async (branch) => {
@@ -57,6 +65,7 @@ export async function GET() {
           lat: branch.lat,
           lng: branch.lng,
           phone: branch.phone,
+          bankCode: branch.bankCode,
           isActive: branch.isActive,
           waitingCount: totalWaiting,
           waitTimeMinutes: Math.max(0, avgWaitMinutes),

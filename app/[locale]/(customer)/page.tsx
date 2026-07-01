@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { MapPin, Search, Clock, Users, Navigation } from "lucide-react";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { MapPin, Search, Clock, Users, Navigation, ArrowLeft, Landmark } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { formatWaitTime } from "@/lib/utils";
 
@@ -20,27 +21,55 @@ type BranchMetric = {
   openCounters: number;
 };
 
-export default function BranchFinderPage() {
+const VALID_BANK_CODES = ["BOC", "PEOPLES", "COMMERCIAL", "HNB", "SAMPATH", "SEYLAN"];
+
+function BranchFinderContent() {
   const t = useTranslations("branch");
+  const tCommon = useTranslations("common");
+  const searchParams = useSearchParams();
+  const bankCode = searchParams.get("bank")?.toUpperCase();
+
   const [branches, setBranches] = useState<BranchMetric[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/customer/branches")
-      .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data?.error ?? "Failed to load branches");
-        }
+    if (!bankCode) return;
+    setLoading(true);
+    fetch(`/api/customer/branches?bank=${bankCode}`)
+      .then((res) => res.json())
+      .then((data) => {
         setBranches(data);
+        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+        setLoading(false);
+      });
+  }, [bankCode]);
 
+  if (!bankCode || !VALID_BANK_CODES.includes(bankCode)) {
+    return (
+      <div className="text-center py-16 space-y-6 max-w-md mx-auto">
+        <div className="p-4 rounded-3xl bg-zinc-900 border border-zinc-800 text-zinc-600 inline-flex">
+          <Landmark className="w-12 h-12" />
+        </div>
+        <h2 className="text-2xl font-bold text-zinc-200">{t("bankNotSelected")}</h2>
+        <p className="text-zinc-500">
+          {t("bankNotSelectedDesc")}
+        </p>
+        <Link
+          href="/select-bank"
+          className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3.5 px-6 rounded-2xl transition-colors min-h-[48px] w-full"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {t("selectBankRedirect")}
+        </Link>
+      </div>
+    );
+  }
+
+  const bankName = t("bankNames." + bankCode);
   const filteredBranches = branches.filter((b) =>
     b.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
     b.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -48,11 +77,21 @@ export default function BranchFinderPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="text-center space-y-4 pt-4">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{t("findBranch")}</h1>
-        <p className="text-zinc-400 text-lg">
-          Find your nearest branch to join the queue or book an appointment.
-        </p>
+      <div className="flex items-center gap-3">
+        <Link
+          href="/select-bank"
+          className="text-zinc-400 hover:text-white p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 transition-colors flex items-center justify-center"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <div>
+          <span className="text-xs font-semibold text-emerald-500 uppercase tracking-widest">
+            {bankName}
+          </span>
+          <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mt-0.5">
+            {t("findBranch")}
+          </h1>
+        </div>
       </div>
 
       <div className="relative max-w-xl mx-auto">
@@ -69,16 +108,15 @@ export default function BranchFinderPage() {
         <button 
           className="absolute inset-y-2 right-2 px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl flex items-center gap-2 transition-colors"
           onClick={() => {
-            // Geolocation could be triggered here
             if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition(() => {
-                // Future: sort by distance
+                // sort logic
               });
             }
           }}
         >
           <Navigation className="w-4 h-4" />
-          <span className="hidden sm:inline">Near Me</span>
+          <span className="hidden sm:inline">{t("nearMe")}</span>
         </button>
       </div>
 
@@ -91,7 +129,7 @@ export default function BranchFinderPage() {
           </div>
         ) : filteredBranches.length === 0 ? (
           <div className="text-center py-12 text-zinc-500">
-            No branches found matching &quot;{searchQuery}&quot;
+            {t("noBranchesForBank", { bankName, query: searchQuery })}
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
@@ -128,7 +166,7 @@ export default function BranchFinderPage() {
                     </div>
                   </div>
                   <div>
-                    <div className="text-zinc-500 text-xs mb-1 uppercase tracking-wider font-semibold">In Line</div>
+                    <div className="text-zinc-500 text-xs mb-1 uppercase tracking-wider font-semibold">{t("inLine")}</div>
                     <div className="text-zinc-200 font-medium">{branch.waitingCount} people</div>
                   </div>
                 </div>
@@ -138,13 +176,13 @@ export default function BranchFinderPage() {
                     href={`/branch/${branch.id}/book`}
                     className="flex items-center justify-center py-2.5 px-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-medium transition-colors min-h-[48px]"
                   >
-                    Book Later
+                    {t("bookLater")}
                   </Link>
                   <Link
                     href={`/branch/${branch.id}`}
                     className="flex items-center justify-center py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium transition-colors min-h-[48px]"
                   >
-                    Select Services
+                    {t("selectServices")}
                   </Link>
                 </div>
               </div>
@@ -153,5 +191,17 @@ export default function BranchFinderPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BranchFinderPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center py-12">
+        <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full" />
+      </div>
+    }>
+      <BranchFinderContent />
+    </Suspense>
   );
 }
