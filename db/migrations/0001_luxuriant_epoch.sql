@@ -1,0 +1,1 @@
+ALTER TABLE "branches" ADD COLUMN "bank_code" text DEFAULT 'BOC' NOT NULL;

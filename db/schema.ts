@@ -20,6 +20,7 @@ export const branches = pgTable("branches", {
   lat: decimal("lat", { precision: 10, scale: 7 }).notNull(),
   lng: decimal("lng", { precision: 10, scale: 7 }).notNull(),
   phone: text("phone").notNull(),
+  bankCode: text("bank_code").default("BOC").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()

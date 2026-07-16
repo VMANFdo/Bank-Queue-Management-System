@@ -85,29 +85,24 @@ export default function Home() {
         {/* Buttons / Actions */}
         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-md">
           <Link
-            href="/"
-            className="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold text-sm tracking-wide shadow-lg shadow-emerald-600/20 hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 text-center"
+            href="/select-bank"
+            className="flex-grow py-4 px-8 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 text-white font-semibold text-base tracking-wide shadow-lg shadow-emerald-600/20 hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 text-center"
           >
-            {navT("bookAppointment")}
-          </Link>
-          <Link
-            href="/"
-            className="flex-1 py-4 px-6 rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-200 font-semibold text-sm tracking-wide hover:bg-zinc-850 hover:text-white hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 text-center backdrop-blur-sm"
-          >
-            {branchT("findBranch")}
+            {t("findBank")}
           </Link>
         </div>
 
         {/* Surfaces Grid */}
         <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-4 mt-8 max-w-6xl">
           {[
-            { name: "Customer Web App", desc: "Ticket booking & live tracking", route: "/branch" },
-            { name: "Teller Console", desc: "Counter ticket management", route: "/teller/console" },
-            { name: "Manager Dashboard", desc: "Live branch health & SLAs", route: "/manager/dashboard" },
+            { name: "Customer Web App", desc: "Ticket booking & live tracking", route: "/select-bank" },
+            { name: "Teller Console", desc: "Counter ticket management", route: "/teller" },
+            { name: "Manager Dashboard", desc: "Live branch health & SLAs", route: "/manager" },
             { name: "Hall Display Board", desc: "Trilingual voice announcing", route: "/display" },
             { name: "HO Admin Portal", desc: "Multi-branch setup & invite flow", route: "/admin" },
           ].map((surface, idx) => (
-            <div
+            <Link
+              href={surface.route}
               key={idx}
               className="p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-zinc-700/60 transition-all duration-300 flex flex-col justify-between text-left backdrop-blur-sm hover:translate-y-[-2px]"
             >
@@ -123,7 +118,7 @@ export default function Home() {
               <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-semibold mt-4 block">
                 Phase {7 + idx} UI
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </main>

@@ -9,7 +9,9 @@
     "cancel": "Cancel",
     "submit": "Submit",
     "close": "Close",
-    "search": "Search"
+    "search": "Search",
+    "findBank": "Find Bank",
+    "offline": "Offline"
   },
   "nav": {
     "home": "Home",
@@ -29,7 +31,31 @@
     },
     "selectService": "Select a Service",
     "notSure": "Not sure? Let us help",
-    "minutes": "{count, plural, one {# min} other {# mins}}"
+    "minutes": "{count, plural, one {# min} other {# mins}}",
+    "selectBank": "Select a Bank",
+    "activeBranches": "{count, plural, one {# Active Branch} other {# Active Branches}}",
+    "bankNames": {
+      "BOC": "Bank of Ceylon",
+      "PEOPLES": "People's Bank",
+      "COMMERCIAL": "Commercial Bank of Ceylon",
+      "HNB": "Hatton National Bank",
+      "SAMPATH": "Sampath Bank",
+      "SEYLAN": "Seylan Bank"
+    },
+    "bankTypes": {
+      "state": "State Bank",
+      "private": "Commercial Bank"
+    },
+    "bankNotSelected": "No Bank Selected",
+    "bankNotSelectedDesc": "Please choose a bank first to view its active branches and service times.",
+    "selectBankRedirect": "Select a Bank",
+    "noBranchesForBank": "No branches online for {bankName} matching \"{query}\"",
+    "nearMe": "Near Me",
+    "inLine": "In Line",
+    "bookLater": "Book Later",
+    "selectServices": "Select Services",
+    "searchBank": "Search bank...",
+    "bankPageSubtitle": "Choose a bank to find branches and manage queue tickets or appointments."
   },
   "ticket": {
     "joinQueue": "Join Queue",
