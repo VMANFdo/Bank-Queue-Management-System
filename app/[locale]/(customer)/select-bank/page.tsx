@@ -97,7 +97,7 @@ export default function SelectBankPage() {
 
   const handleBankSelect = (bankCode: string) => {
     if (branchCounts[bankCode] > 0) {
-      router.push(`/branch?bank=${bankCode}`);
+      router.push(`/branches?bank=${bankCode}`);
     }
   };
 

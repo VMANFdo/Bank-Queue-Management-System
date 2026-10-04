@@ -321,12 +321,12 @@ describe("engine.ts — callNext 3-Pool Priority", () => {
     expect(c5.ticket.id).toBe(s4.ticket.id);
 
     // 6th: empty
-    const c6 = await callNext(ctx.counter1Id);
+    const c6 = await callNext(ctx.counter1Id, tellerId);
     expect(c6).toBeNull();
   });
 
   it("should return null when queue is empty", async () => {
-    const result = await callNext(ctx.counter1Id);
+    const result = await callNext(ctx.counter1Id, tellerId);
     expect(result).toBeNull();
   });
 });

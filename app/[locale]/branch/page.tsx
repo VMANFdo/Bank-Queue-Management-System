@@ -1,3 +1,5 @@
-import BranchFinderPage from "../(customer)/page";
+import { redirect } from "next/navigation";
 
-export default BranchFinderPage;
+export default function BranchIndexPage() {
+  redirect("/branches");
+}

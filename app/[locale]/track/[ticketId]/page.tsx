@@ -101,7 +101,7 @@ export default function TicketTrackPage({
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-950 px-4">
         <p className="text-zinc-400">{error ?? "Ticket not found"}</p>
-        <Link href="/branch" className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white">
+        <Link href="/branches" className="rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white">
           Back to branches
         </Link>
       </div>
@@ -111,7 +111,7 @@ export default function TicketTrackPage({
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <header className="mx-auto flex max-w-2xl items-center justify-between px-4 py-6">
-        <Link href="/branch" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
+        <Link href="/branches" className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
         <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">Home</Link>

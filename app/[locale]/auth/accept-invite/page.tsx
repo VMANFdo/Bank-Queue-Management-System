@@ -33,6 +33,13 @@ export default function AcceptInvitePage() {
           return;
         }
         setSessionReady(true);
+      })
+      .catch((caught: unknown) => {
+        // Network failures reject instead of resolving with an `error`.
+        console.error("Invite verification failed:", caught);
+        setError(
+          "Could not reach the authentication service. Check your connection and try again.",
+        );
       });
   }, []);
 
@@ -52,9 +59,15 @@ export default function AcceptInvitePage() {
     const updates: Record<string, unknown> = { password };
     if (name) updates.data = { name };
 
-    const { error: updateError } = await supabase.auth.updateUser(updates);
-    if (updateError) {
-      setError(updateError.message);
+    try {
+      const { error: updateError } = await supabase.auth.updateUser(updates);
+      if (updateError) {
+        setError(updateError.message);
+        return;
+      }
+    } catch (caught) {
+      console.error("Password update failed:", caught);
+      setError("Could not reach the authentication service. Please try again.");
       return;
     }
 
