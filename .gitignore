@@ -33,6 +33,13 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env.local
 
+# local dev-server captures (contain machine-specific absolute paths)
+dev-server.log
+dev-server.err
+
+# opencode scratch directory
+/.tmp-opencode/
+
 # vercel
 .vercel
 

@@ -438,7 +438,13 @@ export default function TellerConsole() {
   }
 
   async function handleLogout() {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      // Never trap the user in the console because sign-out failed to reach
+      // the auth server — redirect regardless.
+      console.error("Sign-out failed:", err);
+    }
     router.push("/auth/login");
     router.refresh();
   }

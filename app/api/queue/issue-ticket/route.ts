@@ -6,7 +6,13 @@ import { checkRateLimit } from "@/lib/rate-limit";
 export async function POST(request: NextRequest) {
   try {
     // 1. Rate Limiting
-    const ip = request.headers.get("x-forwarded-for") || request.ip || "unknown-ip";
+    // `request.ip` was removed in Next 16. Without a real client IP every
+    // anonymous caller would share the "unknown-ip" bucket, so one abuser
+    // could lock out every customer at the branch.
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown-ip";
     const limit = checkRateLimit(`issue-ticket:${ip}`, { maxRequests: 5, windowMs: 60_000 });
     
     if (!limit.allowed) {

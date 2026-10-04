@@ -10,18 +10,28 @@ const intlMiddleware = createMiddleware(routing);
  */
 const PUBLIC_ROUTES = [
   /^\/$/, // home
+  /^\/select-bank(\/.*)?$/, // bank picker (customer entry point)
+  /^\/branches(\/.*)?$/, // branch finder
   /^\/branch(\/.*)?$/, // branch pages (customer)
   /^\/track(\/.*)?$/, // ticket tracking (customer)
   /^\/display(\/.*)?$/, // hall display board
   /^\/auth(\/.*)?$/, // auth pages
   /^\/api\/customer(\/.*)?$/, // public customer APIs
+  /^\/api\/health(\/.*)?$/, // diagnostics (no secrets, safe pre-login)
   /^\/api\/queue\/issue-ticket$/, // public ticket creation
   /^\/api\/queue\/check-in-appointment$/, // public check-in
   /^\/api\/cron\/sweep$/, // cron (secured by CRON_SECRET header internally)
 ];
 
+// next-intl only prefixes non-default locales, so /si/branch and /branch are the
+// same page. Match against the unprefixed path, otherwise every Sinhala and
+// Tamil URL misses the whitelist and an anonymous visitor gets redirected to
+// the login page.
+const LOCALE_PREFIX = /^\/(en|si|ta)(\/|$)/;
+
 function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some((pattern) => pattern.test(pathname));
+  const path = pathname.replace(LOCALE_PREFIX, "/");
+  return PUBLIC_ROUTES.some((pattern) => pattern.test(path));
 }
 
 export async function middleware(request: NextRequest) {
